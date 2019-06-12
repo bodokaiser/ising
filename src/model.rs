@@ -16,7 +16,7 @@ impl Ising {
             beta: beta,
             cols: cols,
             rows: rows,
-            data: vec![1; (cols * rows) as usize],
+            data: vec![-1; (cols * rows) as usize],
             energy: -((cols * rows) as i32),
         }
     }
@@ -57,7 +57,11 @@ impl Ising {
         }
     }
 
-    pub fn magnetisation(self) -> f64 {
+    pub fn energy(&self) -> i32 {
+        return self.energy;
+    }
+
+    pub fn magnetisation(&self) -> f64 {
         let sum: i32 = self.data.iter().map(|&spin| spin as i32).sum();
 
         return f64::from(sum) / (self.data.len() as f64);
