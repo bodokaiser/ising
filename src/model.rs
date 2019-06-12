@@ -57,6 +57,10 @@ impl Ising {
         }
     }
 
+    pub fn size(&self) -> usize {
+        return self.data.len();
+    }
+
     pub fn energy(&self) -> i32 {
         return self.energy;
     }
@@ -64,7 +68,15 @@ impl Ising {
     pub fn magnetisation(&self) -> f64 {
         let sum: i32 = self.data.iter().map(|&spin| spin as i32).sum();
 
-        return f64::from(sum) / (self.data.len() as f64);
+        return f64::from(sum) / (self.size() as f64);
+    }
+
+    pub fn susceptibility(&self) -> f64 {
+        let mean = self.magnetisation();
+
+        let sum: f64 = self.data.iter().map(|&spin| (spin as f64) - mean).sum();
+
+        return (self.beta as f64) * sum / (self.size() as f64);
     }
 }
 
