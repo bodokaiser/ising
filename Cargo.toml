@@ -1,0 +1,9 @@
+[package]
+name = "ising"
+version = "0.1.0"
+authors = ["Bodo Kaiser <i@bodokaiser.io>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6"
+clap = "2.33"
