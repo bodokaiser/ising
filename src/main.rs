@@ -33,11 +33,11 @@ fn main() {
 
     let mut ising = model::Ising::new(beta, size, size);
 
-    println!("step, energy, magnetisation");
+    println!("step,energy,magnetisation");
 
     for step in 0..steps {
         ising.step();
 
-        println!("{}, {}, {}", step, ising.energy(), ising.magnetisation());
+        println!("{},{},{}", step, ising.energy(), ising.magnetisation());
     }
 }
