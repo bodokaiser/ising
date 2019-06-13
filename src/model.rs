@@ -8,16 +8,20 @@ pub struct Ising {
     rows: u32,
     data: Vec<i8>,
     energy: i32,
+    magnetisation: i32,
 }
 
 impl Ising {
-    pub fn new(beta: f32, cols: u32, rows: u32) -> Ising {
+    pub fn new(temperature: f32, cols: u32, rows: u32) -> Ising {
+        let size = (cols * rows) as i32;
+
         Ising {
-            beta: beta,
+            beta: 1.0 / temperature,
             cols: cols,
             rows: rows,
-            data: vec![-1; (cols * rows) as usize],
-            energy: -((cols * rows) as i32),
+            data: vec![1; size as usize],
+            energy: -2 * size,
+            magnetisation: size,
         }
     }
 
@@ -43,17 +47,20 @@ impl Ising {
 
         let spin = self.spin(col, row);
 
-        let delta_energy = 2
+        let energy_diff = 2
             * spin
             * (self.spin(col + 1, row)
                 + self.spin(col - 1, row)
                 + self.spin(col, row - 1)
                 + self.spin(col, row + 1));
 
-        if delta_energy < 0 || rng.gen::<f32>() < (-self.beta * (delta_energy as f32)).exp() {
+        let epsilon = rng.gen::<f32>();
+
+        if energy_diff <= 0 || epsilon < (-self.beta * f32::from(energy_diff)).exp() {
             self.set_spin(col, row, -spin);
 
-            self.energy += delta_energy as i32;
+            self.energy += energy_diff as i32;
+            self.magnetisation -= 2 * spin as i32;
         }
     }
 
@@ -65,16 +72,19 @@ impl Ising {
         return self.energy;
     }
 
-    pub fn magnetisation(&self) -> f64 {
-        let sum: i32 = self.data.iter().map(|&spin| spin as i32).sum();
-
-        return f64::from(sum) / (self.size() as f64);
+    pub fn magnetisation(&self) -> i32 {
+        return self.magnetisation;
     }
 
     pub fn susceptibility(&self) -> f64 {
-        let mean = self.magnetisation();
+        let mean = f64::from(self.magnetisation()) / (self.size() as f64);
 
-        let sum: f64 = self.data.iter().map(|&spin| (spin as f64) - mean).sum();
+        let sum: f64 = self
+            .data
+            .iter()
+            .map(|&spin| spin as f64)
+            .map(|spin| (spin - mean).powf(2.0))
+            .sum();
 
         return (self.beta as f64) * sum / (self.size() as f64);
     }

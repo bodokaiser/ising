@@ -14,9 +14,9 @@ fn main() {
                 .takes_value(true),
         )
         .arg(
-            clap::Arg::with_name("beta")
-                .long("beta")
-                .default_value("1")
+            clap::Arg::with_name("temperature")
+                .long("temperature")
+                .required(true)
                 .takes_value(true),
         )
         .arg(
@@ -33,12 +33,12 @@ fn main() {
         )
         .get_matches();
 
-    let steps = value_t!(matches, "steps", u32).unwrap_or_else(|e| e.exit());
-    let beta = value_t!(matches, "beta", f32).unwrap_or_else(|e| e.exit());
     let size = value_t!(matches, "size", u32).unwrap_or_else(|e| e.exit());
+    let steps = value_t!(matches, "steps", u32).unwrap_or_else(|e| e.exit());
+    let temperature = value_t!(matches, "temperature", f32).unwrap_or_else(|e| e.exit());
     let burn_in_steps = value_t!(matches, "burn-in-steps", u32).unwrap_or_else(|e| e.exit());
 
-    let mut ising = model::Ising::new(beta, size, size);
+    let mut ising = model::Ising::new(temperature, size, size);
 
     println!("step,energy,magnetisation,susceptibility");
 
