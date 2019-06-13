@@ -1,18 +1,16 @@
-use std::f32;
-
 use rand::Rng;
 
 pub struct Ising {
-    beta: f32,
-    cols: u32,
-    rows: u32,
+    beta: f64,
+    cols: u16,
+    rows: u16,
     data: Vec<i8>,
     energy: i32,
     magnetisation: i32,
 }
 
 impl Ising {
-    pub fn new(temperature: f32, cols: u32, rows: u32) -> Ising {
+    pub fn new(temperature: f64, cols: u16, rows: u16) -> Ising {
         let size = (cols * rows) as i32;
 
         Ising {
@@ -54,9 +52,7 @@ impl Ising {
                 + self.spin(col, row - 1)
                 + self.spin(col, row + 1));
 
-        let epsilon = rng.gen::<f32>();
-
-        if energy_diff <= 0 || epsilon < (-self.beta * f32::from(energy_diff)).exp() {
+        if energy_diff <= 0 || rng.gen::<f64>() < (-self.beta * f64::from(energy_diff)).exp() {
             self.set_spin(col, row, -spin);
 
             self.energy += energy_diff as i32;
@@ -90,13 +86,13 @@ impl Ising {
     }
 }
 
-fn reflect_index(index: i32, boundary: i32) -> u32 {
+fn reflect_index(index: i32, boundary: i32) -> u16 {
     if index < 0 {
-        return (boundary - (-index % boundary)) as u32;
+        return (boundary - (-index % boundary)) as u16;
     }
     if index > boundary - 1 {
-        return (index % (boundary - 1)) as u32;
+        return (index % (boundary - 1)) as u16;
     }
 
-    return index as u32;
+    return index as u16;
 }

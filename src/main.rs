@@ -33,9 +33,9 @@ fn main() {
         )
         .get_matches();
 
-    let size = value_t!(matches, "size", u32).unwrap_or_else(|e| e.exit());
+    let size = value_t!(matches, "size", u16).unwrap_or_else(|e| e.exit());
     let steps = value_t!(matches, "steps", u32).unwrap_or_else(|e| e.exit());
-    let temperature = value_t!(matches, "temperature", f32).unwrap_or_else(|e| e.exit());
+    let temperature = value_t!(matches, "temperature", f64).unwrap_or_else(|e| e.exit());
     let burn_in_steps = value_t!(matches, "burn-in-steps", u32).unwrap_or_else(|e| e.exit());
 
     let mut ising = model::Ising::new(temperature, size, size);
