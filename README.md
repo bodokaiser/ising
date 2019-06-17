@@ -14,5 +14,5 @@ cargo build
 Run the binary and pipe the csv formatted output into a file:
 
 ```shell
-./target/debug/ising --temperature 2.25 --size 32 --steps 50000 > data.csv
+./target/debug/ising --temperature 2.25 --size 32 --total-steps 50000 > data.csv
 ```

@@ -84,6 +84,17 @@ impl Ising {
 
         return (self.beta as f64) * sum / (self.size() as f64);
     }
+
+    pub fn absolute_magnetisation(&self) -> f64 {
+        let sum: f64 = self
+            .data
+            .iter()
+            .map(|&spin| spin as f64)
+            .map(|spin| spin.abs())
+            .sum();
+
+        return sum / (self.size() as f64);
+    }
 }
 
 fn reflect_index(index: i32, boundary: i32) -> u16 {

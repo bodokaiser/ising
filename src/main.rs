@@ -8,12 +8,6 @@ fn main() {
         .version("1.0")
         .author("Bodo Kaiser")
         .arg(
-            clap::Arg::with_name("steps")
-                .long("steps")
-                .required(true)
-                .takes_value(true),
-        )
-        .arg(
             clap::Arg::with_name("temperature")
                 .long("temperature")
                 .required(true)
@@ -26,32 +20,39 @@ fn main() {
                 .takes_value(true),
         )
         .arg(
-            clap::Arg::with_name("burn-in-steps")
-                .long("burn-in-steps")
+            clap::Arg::with_name("total-steps")
+                .long("total-steps")
+                .required(true)
+                .takes_value(true),
+        )
+        .arg(
+            clap::Arg::with_name("burnin-steps")
+                .long("burnin-steps")
                 .default_value("0")
                 .takes_value(true),
         )
         .get_matches();
 
     let size = value_t!(matches, "size", u16).unwrap_or_else(|e| e.exit());
-    let steps = value_t!(matches, "steps", u32).unwrap_or_else(|e| e.exit());
     let temperature = value_t!(matches, "temperature", f64).unwrap_or_else(|e| e.exit());
-    let burn_in_steps = value_t!(matches, "burn-in-steps", u32).unwrap_or_else(|e| e.exit());
+    let total_steps = value_t!(matches, "total-steps", u32).unwrap_or_else(|e| e.exit());
+    let burnin_steps = value_t!(matches, "burnin-steps", u32).unwrap_or_else(|e| e.exit());
 
     let mut ising = model::Ising::new(temperature, size, size);
 
-    println!("step,energy,magnetisation,susceptibility");
+    println!("step,energy,magnetisation,susceptibility,absolute magnetisation");
 
-    for step in 0..steps {
+    for step in 0..total_steps {
         ising.step();
 
-        if step >= burn_in_steps {
+        if step >= burnin_steps {
             println!(
-                "{},{},{},{}",
+                "{},{},{},{},{}",
                 step,
                 ising.energy(),
                 ising.magnetisation(),
-                ising.susceptibility()
+                ising.susceptibility(),
+                ising.absolute_magnetisation()
             );
         }
     }
