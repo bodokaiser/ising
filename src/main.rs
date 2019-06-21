@@ -40,19 +40,18 @@ fn main() {
 
     let mut ising = model::Ising::new(temperature, size, size);
 
-    println!("step,energy,magnetisation,susceptibility,absolute magnetisation");
+    println!("step,energy,magnetisation,susceptibility");
 
     for step in 0..total_steps {
         ising.step();
 
         if step >= burnin_steps {
             println!(
-                "{},{},{},{},{}",
+                "{},{},{},{}",
                 step,
                 ising.energy(),
                 ising.magnetisation(),
-                ising.susceptibility(),
-                ising.absolute_magnetisation()
+                ising.susceptibility()
             );
         }
     }
